@@ -1,1 +1,2 @@
-:root { --primary: #2457a7; --text: #172b4d; --muted: #59677a; --background: #f5f7fa; --surface: #ffffff; --border: #dfe4ec; }
+/* 상태 색 값은 Figma Foundations 확인 후 확정한다(계획 §6). */
+:root { --primary: #2457a7; --text: #172b4d; --muted: #59677a; --background: #f5f7fa; --surface: #ffffff; --border: #dfe4ec; --focus: #1d4ed8; --danger: #b42318; --danger-bg: #fef3f2; }
