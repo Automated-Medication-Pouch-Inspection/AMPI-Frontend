@@ -162,3 +162,26 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, input:focus-vis
 
 /* 터치 대상 44px 이상(완료 조건 11) */
 .capture-meta a, .table-link { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* S-05 검수 이력(2단계) */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.history-filters .field.inline { min-width: 150px; flex: 1 1 150px; }
+.history-filters .ant-select { width: 100%; min-height: 40px; }
+.history-filters .ant-select-selector { min-height: 40px !important; align-items: center; }
+.filter-actions { display: flex; gap: 8px; margin-left: auto; }
+.filter-actions .ant-btn { min-height: 44px; min-width: 96px; }
+.filter-notes { margin-top: 10px; min-height: 20px; }
+.filter-notes p { margin: 2px 0 0; }
+.dirty-note { color: var(--primary); font-weight: 600; }
+.ant-btn[aria-disabled='true'] { opacity: .5; cursor: not-allowed; }
+.ant-btn.is-busy[aria-disabled='true'] { opacity: .8; cursor: progress; }
+.result-summary { margin: 4px 0 0; }
+.history-error { margin-bottom: 14px; }
+.history-loading, .history-empty { padding: 32px 0; text-align: center; display: grid; gap: 8px; justify-items: center; }
+.history-loading .ant-skeleton { text-align: left; }
+.empty-title { margin: 0; font-size: 16px; font-weight: 600; }
+.history-empty p { margin: 0; }
+.decision-cell { display: inline-flex; align-items: center; gap: 2px; }
+.history-pagination { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.history-pagination ul { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.history-pagination .ant-btn { min-width: 44px; min-height: 44px; }
