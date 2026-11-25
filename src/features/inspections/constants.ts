@@ -1,4 +1,4 @@
-import type { AiResult, Decision, ErrorType } from './types';
+import type { AiResult, Decision, ErrorType, HistoryPeriod } from './types';
 
 // 화면 문구 기준(D-006). AI 결과를 최종 판정처럼 표현하지 않는다.
 export const aiResultLabels: Record<AiResult, string> = {
@@ -24,3 +24,10 @@ export const errorTypeLabels: Record<ErrorType, string> = {
 };
 
 export const errorTypes = Object.keys(errorTypeLabels) as ErrorType[];
+
+export const historyPeriodLabels: Record<HistoryPeriod, string> = {
+  today: '오늘',
+  yesterday: '어제',
+  '7d': '최근 7일',
+  '30d': '최근 30일',
+};
