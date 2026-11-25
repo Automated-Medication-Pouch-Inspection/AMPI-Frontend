@@ -1,9 +1,20 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
-import { InspectionListPage } from '../features/inspections/pages/InspectionListPage';
-import { InspectionDetailPage } from '../features/inspections/pages/InspectionDetailPage';
+import { LiveMonitoringPage } from '../features/live/pages/LiveMonitoringPage';
+import { JudgmentPage } from '../features/judgment/pages/JudgmentPage';
+import { HistoryPage } from '../features/history/pages/HistoryPage';
 import { NotFoundPage } from './NotFoundPage';
 
 export function App() {
-  return <Routes><Route element={<AppLayout />}><Route index element={<InspectionListPage />} /><Route path="inspections/:id" element={<InspectionDetailPage />} /><Route path="*" element={<NotFoundPage />} /></Route></Routes>;
+  return (
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<Navigate to="/live" replace />} />
+        <Route path="live" element={<LiveMonitoringPage />} />
+        <Route path="history" element={<HistoryPage />} />
+        <Route path="inspections/:id" element={<JudgmentPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
+  );
 }
