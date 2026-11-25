@@ -85,9 +85,3 @@ public/                # 공개 정적 파일
 
 모든 데이터는 시연 전용입니다. 이미지·분석 결과·결과 저장·인증은 구현되지 않았습니다.
 실제 서버 연결은 `src/features/inspections/api.ts`에서 시작합니다. API 응답의 런타임 검증·인증·권한 처리는 실제 연동 시 추가해야 합니다. `VITE_` 환경 변수에는 비밀키를 넣지 마세요.
-
-## 구조 참고
-
-[SEMOSAN_FE](https://github.com/SEMOSAN/SEMOSAN_FE)의 역할별·기능별 폴더 구분을 참고했습니다. 해당 프로젝트는 React Native·Expo 모바일 앱이므로 모바일 코드·설정·자산은 복제하지 않았습니다. 웹 프로젝트에 맞춰 `src/` 아래에 코드를 모았습니다. 서버가 SPA 경로를 `index.html`로 돌려주도록 설정해야 직접 상세 주소를 열 수 있습니다.
-
-기존 기획 문서는 `docs/archive/initial-planning/`에 보관합니다. 해당 문서의 전체 서비스 범위와 이전 파일 구조는 현재 프런트엔드 구현 상태를 나타내지 않습니다. 개발 기준은 이 README와 `docs/frontend-guide.md`입니다.
