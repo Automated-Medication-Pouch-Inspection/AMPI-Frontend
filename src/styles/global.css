@@ -1,0 +1,23 @@
+@import './tokens.css';
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--text); background: var(--background); font-family: system-ui, sans-serif; }
+a { color: var(--primary); }
+a:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.app-shell { min-height: 100vh; flex-direction: row; }
+.sidebar { width: 210px; flex-shrink: 0; padding: 28px 20px; background: var(--surface); border-right: 1px solid var(--border); }
+.brand { font-size: 24px; font-weight: 700; }
+.sidebar p { color: var(--muted); }
+.sidebar nav { margin-top: 36px; }
+.sidebar nav a { display: block; padding: 12px; border-radius: 6px; text-decoration: none; }
+.sidebar nav a.active { background: #edf3fc; font-weight: 600; }
+.topbar { background: var(--surface); padding: 18px 28px; border-bottom: 1px solid var(--border); }
+.main-content { padding: 28px; min-width: 0; }
+.main-content h1 { font-size: 26px; }
+.filters { margin: 16px 0 24px; }
+.filters .ant-input-affix-wrapper { width: 290px; max-width: 100%; }
+.filters .ant-select { min-width: 150px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.image-placeholder { min-height: 260px; display: grid; place-content: center; text-align: center; color: var(--muted); background: var(--background); line-height: 1.8; }
+.skip-link { position: fixed; top: -100px; left: 10px; padding: 12px; background: white; z-index: 100; }
+.skip-link:focus { top: 10px; }
+@media (max-width: 800px) { .app-shell { flex-direction: column !important; } .sidebar { width: 100%; padding: 16px; border-right: 0; border-bottom: 1px solid var(--border); } .sidebar nav { margin-top: 8px; } .sidebar p { display: none; } .main-content { padding: 16px; } .detail-grid { grid-template-columns: 1fr; } }
