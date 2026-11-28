@@ -60,3 +60,28 @@ export interface JudgmentInput {
 }
 
 export interface SaveResult { inspection: Inspection; unconfirmedCount: number }
+
+/** 이력 조회 기간. 기준일은 서버가 정한다(시연은 가상 데이터 기준일). */
+export type HistoryPeriod = 'today' | 'yesterday' | '7d' | '30d';
+
+/** 이력 조회 요청(계획 §5-3: 필터 값, page, pageSize). 정렬은 최신순 고정. */
+export interface HistorySearch {
+  period: HistoryPeriod;
+  deviceId: string | null;
+  aiResult: AiResult | null;
+  decision: Decision | null;
+  errorType: ErrorType | null;
+  unconfirmedOnly: boolean;
+  page: number;
+  pageSize: number;
+}
+
+export interface HistoryPage {
+  items: Inspection[];
+  total: number;
+  /** 실제로 돌려준 페이지. 요청 페이지가 마지막 페이지를 넘으면 마지막 페이지로 맞춘다. */
+  page: number;
+  pageSize: number;
+  /** 기간의 시작·끝 날짜(YYYY-MM-DD, 한국 시간) */
+  range: { from: string; to: string };
+}

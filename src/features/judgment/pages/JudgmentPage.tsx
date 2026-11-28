@@ -24,8 +24,10 @@ export function JudgmentPage() {
 
 function JudgmentScreen({ id }: { id: string }) {
   usePageTitle('약포지 판정');
-  const { inspections, devices } = useInspectionStore();
-  const item = inspections.find(row => row.id === id);
+  const { inspections, archive, devices } = useInspectionStore();
+  // 검수 이력에서 지난 기록을 열 수도 있다. 지난 기록은 모두 판정이 끝난 읽기 전용 데이터다.
+  const source = inspections.some(row => row.id === id) ? inspections : archive;
+  const item = source.find(row => row.id === id);
   const device = item ? findDevice(devices, item.deviceId) : undefined;
   const { target, entryState } = useReturnTarget();
   const navigate = useNavigate();
@@ -73,7 +75,7 @@ function JudgmentScreen({ id }: { id: string }) {
     );
   }
 
-  const timeline = selectDeviceTimeline(inspections, item.deviceId);
+  const timeline = selectDeviceTimeline(source, item.deviceId);
   const index = timeline.findIndex(row => row.id === item.id);
   const blocked = isMaskingBlocked(item, device);
 

@@ -1,4 +1,4 @@
-import type { AiResult, Detection, Device, Inspection, Judgment, MaskingStatus } from '../features/inspections/types';
+import type { AiResult, Detection, Device, ErrorType, Inspection, Judgment, MaskingStatus } from '../features/inspections/types';
 
 // 모든 값은 개발용 가상 데이터입니다. 실제 약품·처방·환자 정보가 아닙니다.
 // 이미지도 실제 촬영본이 아니라 코드로 그린 시연용 그림입니다.
@@ -57,7 +57,10 @@ const seeds: Seed[] = [
   { id: 'DEMO-015', device: 'device-2', seq: 122, time: '14:29:24', expected: 2, detected: 2, ai: 'match' },
 ];
 
-export const demoInspections: Inspection[] = seeds.map(seed => {
+/** 가상 데이터의 기준일(한국 시간). "오늘" 조회는 실제 날짜가 아니라 이 날짜를 기준으로 한다. */
+export const DEMO_TODAY = '2026-11-25';
+
+function toInspection(seed: Seed, date: string): Inspection {
   const device = demoDevices.find(item => item.id === seed.device)!;
   const sequenceNo = `#${String(seed.seq).padStart(4, '0')}`;
   const drawn = seed.detected ?? seed.expected;
@@ -67,7 +70,7 @@ export const demoInspections: Inspection[] = seeds.map(seed => {
     deviceId: device.id,
     deviceName: device.name,
     sequenceNo,
-    capturedAt: `2026-11-25T${seed.time}+09:00`,
+    capturedAt: `${date}T${seed.time}+09:00`,
     expectedCount: seed.expected,
     detectedCount: seed.detected,
     aiResult: seed.ai,
@@ -77,4 +80,71 @@ export const demoInspections: Inspection[] = seeds.map(seed => {
     judgment: seed.judgment ?? null,
     version: seed.judgment ? 2 : 1,
   };
-});
+}
+
+/** 오늘(기준일) 실시간 검수 데이터. S-03·S-04가 함께 쓴다. */
+export const demoInspections: Inspection[] = seeds.map(seed => toInspection(seed, DEMO_TODAY));
+
+// ── 지난 기록(검수 이력 페이지 시연용) ──────────────────────────────
+// 기준일 이전 29일치를 고정 시드 난수로 만든다. 새로고침해도 같은 값이 나온다.
+// 지난 기록의 확인 필요 건은 모두 판정을 끝낸 상태로 둔다(상단 미확인 배지는 오늘 데이터 기준).
+
+const ARCHIVE_DAYS = 29;
+const pharmacists = ['김약사', '이약사', '박약사'];
+const errorTypePool: ErrorType[] = ['missing', 'extra', 'wrong-drug', 'foreign', 'packaging', 'other'];
+const falsePositiveMemos = ['그림자를 정제로 인식', '반사광으로 개수 오인', ''];
+
+function seededRandom(seed: number) {
+  let value = seed;
+  return () => {
+    value = (value + 0x6d2b79f5) | 0;
+    let t = Math.imul(value ^ (value >>> 15), 1 | value);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** YYYY-MM-DD에서 days일 뺀 날짜 */
+export function shiftDate(date: string, days: number) {
+  const [y, m, d] = date.split('-').map(Number);
+  const shifted = new Date(Date.UTC(y, m - 1, d - days));
+  return shifted.toISOString().slice(0, 10);
+}
+
+function buildArchive(): Inspection[] {
+  const random = seededRandom(20261125);
+  const pick = <T,>(items: T[]) => items[Math.floor(random() * items.length)];
+  const result: Inspection[] = [];
+  for (let back = 1; back <= ARCHIVE_DAYS; back += 1) {
+    const date = shiftDate(DEMO_TODAY, back);
+    const compact = date.slice(5).replace('-', '');
+    for (const device of ['device-1', 'device-2'] as const) {
+      const count = 5 + Math.floor(random() * 6);
+      const startMinute = 9 * 60 + Math.floor(random() * 120);
+      for (let index = 0; index < count; index += 1) {
+        const seq = index + 1;
+        const minute = startMinute + index * (20 + Math.floor(random() * 25));
+        const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}:${String(Math.floor(random() * 60)).padStart(2, '0')}`;
+        const expected = device === 'device-1' ? [3, 2, 3][index % 3] : 2;
+        const roll = random();
+        const ai: AiResult = roll < 0.8 ? 'match' : roll < 0.94 ? 'suspected' : 'unreadable';
+        const detected = ai === 'match' ? expected : ai === 'unreadable' ? null : expected + (random() < 0.5 ? -1 : 1);
+        const judgedAt = `${date}T${time}+09:00`;
+        let judgment: Judgment | undefined;
+        if (ai !== 'match') {
+          const judgedBy = pick(pharmacists);
+          judgment = random() < 0.45
+            ? { decision: 'error', errorType: pick(errorTypePool), memo: '', actionDone: true, judgedBy, judgedAt }
+            : { decision: 'false-positive', memo: pick(falsePositiveMemos), judgedBy, judgedAt };
+        }
+        const masking: MaskingStatus = random() < 0.03 ? 'failed' : 'ok';
+        const id = `DEMO-H${compact}-${device === 'device-1' ? 1 : 2}${String(seq).padStart(2, '0')}`;
+        result.push(toInspection({ id, device, seq, time, expected, detected, ai, masking, judgment }, date));
+      }
+    }
+  }
+  return result;
+}
+
+/** 기준일 이전 지난 기록. 검수 이력 조회·상세에서만 쓰고 실시간 검수 집계에는 넣지 않는다. */
+export const demoArchive: Inspection[] = buildArchive();
